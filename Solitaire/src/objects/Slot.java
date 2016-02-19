@@ -23,7 +23,7 @@ public class Slot extends GameObject {
 
 	@Override
 	public void draw(Graphics2D g) {
-		g.setColor(Color.red);
+		g.setColor(Color.gray);
 		g.fill(getBounds());
 		
 		for (int i = 0; i < cardPile.size(); i++) {
@@ -63,5 +63,9 @@ public class Slot extends GameObject {
 	public void printCards() {
 		System.out.println(""+cardPile.size());
 		
+	}
+
+	public Card lastCard() {
+		return cardPile.get(cardPile.size()-1);
 	}
 }
