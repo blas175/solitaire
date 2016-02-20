@@ -2,16 +2,17 @@ package main;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import javax.swing.JPanel;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import objects.BaseSlot;
 import objects.Card;
 import objects.FinishSlot;
 import objects.Pile;
+import objects.Point;
 import objects.Slot;
 
 public class PlayState extends GameState {
@@ -30,7 +31,7 @@ public class PlayState extends GameState {
 	public static final int NB_CARDS = 52;
 	public static final int NB_COLORS = 4;
 	public static final int NB_PILES = 7;
-	private static final int NB_VALUES = 1;
+	private static final int NB_VALUES = 13;
 
 	private ArrayList<Slot> slots;
 	private ArrayList<FinishSlot> finishSlots;
@@ -43,14 +44,18 @@ public class PlayState extends GameState {
 	private Pile pile;
 	private BaseSlot startSlot;
 	private ArrayList<CardId> cardsIds;
+	private boolean won;
+	private JFrame frame;
 
-	public PlayState(GameStateManager gsm, JPanel panel) {
+	public PlayState(GameStateManager gsm, GamePanel panel) {
 		super(gsm);
+		frame = panel.getFrame();
+		texture = new Texture();
 		init();
 	}
 
 	public void init() {
-		texture = new Texture();
+		won = false;
 		slots = new ArrayList<>();
 		finishSlots = new ArrayList<>();
 		cardsUnder = new ArrayList<>();
@@ -78,7 +83,7 @@ public class PlayState extends GameState {
 				if (j == i) {
 					card.setVisible(true);
 				}
-				slot.addToPile(card);
+				slot.addToPileHid(card);
 			}
 		}
 		for (int i = 0; i < cardsIds.size(); i++) {
@@ -90,56 +95,85 @@ public class PlayState extends GameState {
 	}
 
 	public void pressed() {
-		Point mouse = new Point(Mouse.x, Mouse.y);
-
-		if (pile.contains(mouse)) {
-			pile.next();
-			return;
-		}
-		Card pileCard = pile.getCurCard();
-		if (pileCard != null && pileCard.contains(mouse)) {
-			mouse_dx = (int) (Mouse.x - pileCard.getX());
-			mouse_dy = (int) (Mouse.y - pileCard.getY());
-			activeCard = pileCard;
-			startSlot = pile;
-			return;
-		}
-
-		for (int i = 0; i < finishSlots.size(); i++) {
-			FinishSlot finishSlot = finishSlots.get(i);
-			if (finishSlot.contains(mouse) && !finishSlot.getCardPile().isEmpty()) {
-				mouse_dx = (int) (Mouse.x - finishSlot.getX());
-				mouse_dy = (int) (Mouse.y - finishSlot.getY());
-				activeCard = finishSlot.lastCard();
-				startSlot = finishSlot;
+		if (!won) {
+			Point mouse = new Point((double) Mouse.x, (double) Mouse.y);
+			if (pile.contains(mouse)) {
+				pile.next();
 				return;
 			}
-		}
+			Card pileCard = pile.getCurCard();
+			if (pileCard != null && pileCard.contains(mouse)) {
+				mouse_dx = (int) (Mouse.x - pileCard.getX());
+				mouse_dy = (int) (Mouse.y - pileCard.getY());
+				activeCard = pileCard;
+				startSlot = pile;
+				if (Mouse.isDoubleClick()) {
+					FinishSlot finishSlot = finishSlots.get(activeCard.getColor());
+					if (activeCard.getValue() == finishSlot.getCardPile().size()) {
 
-		for (int i = 0; i < slots.size(); i++) {
-			Slot slot = slots.get(i);
-			for (int j = slot.getCardPile().size() - 1; j >= 0; j--) {
-				Card card = slot.getCardPile().get(j);
-				if (card.contains(mouse) && card.isVisible()) {
-					mouse_dx = (int) (Mouse.x - card.getX());
-					mouse_dy = (int) (Mouse.y - card.getY());
-					activeCard = card;
-					slot.removeCard(activeCard, cardsUnder);
-					startSlot = slot;
+						finishSlot.addToPile(activeCard);
+						pile.removeCurCard();
+						pile.previous();
+						startSlot = null;
+						activeCard = null;
+						checkWon();
+						return;
+					}
+				}
+				return;
+			}
+
+			for (int i = 0; i < finishSlots.size(); i++) {
+				FinishSlot finishSlot = finishSlots.get(i);
+				if (finishSlot.contains(mouse) && !finishSlot.getCardPile().isEmpty()) {
+					mouse_dx = (int) (Mouse.x - finishSlot.getX());
+					mouse_dy = (int) (Mouse.y - finishSlot.getY());
+					activeCard = finishSlot.lastCard();
+					startSlot = finishSlot;
 					return;
+				}
+			}
+
+			for (int i = 0; i < slots.size(); i++) {
+				Slot slot = slots.get(i);
+				for (int j = slot.getCardPile().size() - 1; j >= 0; j--) {
+					Card card = slot.getCardPile().get(j);
+					if (card.contains(mouse) && card.isVisible()) {
+						mouse_dx = (int) (Mouse.x - card.getX());
+						mouse_dy = (int) (Mouse.y - card.getY());
+						activeCard = card;
+
+						slot.removeCard(activeCard, cardsUnder);
+						startSlot = slot;
+						if (Mouse.isDoubleClick()) {
+							FinishSlot finishSlot = finishSlots.get(activeCard.getColor());
+							if (cardsUnder.isEmpty() && activeCard.getValue() == finishSlot.getCardPile().size()) {
+
+								finishSlot.addToPile(activeCard);
+
+								if (!slot.getCardPile().isEmpty())
+									slot.lastCard().setVisible(true);
+								startSlot = null;
+								activeCard = null;
+								checkWon();
+								return;
+							}
+						}
+						return;
+					}
 				}
 			}
 		}
 	}
 
 	public void released() {
-		Point mouse = new Point(Mouse.x, Mouse.y);
 
-		if (activeCard != null) {
+		if (!won && activeCard != null) {
 
 			for (int i = 0; i < finishSlots.size(); i++) {
 				FinishSlot finishSlot = finishSlots.get(i);
-				if (finishSlot.contains(mouse) && activeCard.getColor() == finishSlot.getColor()
+				if (finishSlot.contains(activeCard) && cardsUnder.isEmpty()
+						&& activeCard.getColor() == finishSlot.getColor()
 						&& activeCard.getValue() == finishSlot.getCardPile().size()) {
 
 					finishSlot.addToPile(activeCard);
@@ -159,9 +193,9 @@ public class PlayState extends GameState {
 				}
 			}
 
-			for (int i = slots.size() - 1; i >= 0; i--) {
+			for (int i = 0; i < slots.size(); i++) {
 				Slot s = slots.get(i);
-				if ((!s.getCardPile().isEmpty() && s.lastCard().contains(mouse)) || s.contains(mouse)) {
+				if ((!s.getCardPile().isEmpty() && s.lastCard().contains(activeCard)) || s.contains(activeCard)) {
 					if ((s.getCardPile().isEmpty() && activeCard.getValue() == 12)
 							|| (!s.getCardPile().isEmpty() && s.lastCard().getValue() == activeCard.getValue() + 1
 									&& (s.lastCard().getColor() - activeCard.getColor()) % 2 != 0)) {
@@ -190,6 +224,8 @@ public class PlayState extends GameState {
 			}
 			if (startSlot instanceof Slot) {
 				Slot slot = (Slot) startSlot;
+				slots.remove(slot);
+				slots.add(slot);
 				slot.addToPile(activeCard);
 				for (int i = 0; i < cardsUnder.size(); i++) {
 					slot.addToPile(cardsUnder.get(i));
@@ -198,10 +234,10 @@ public class PlayState extends GameState {
 				startSlot = null;
 				activeCard = null;
 			} else if (startSlot instanceof Pile) {
-				activeCard.setPos(pile.getCardPos());
+				activeCard.moveTo(pile.getCardPos());
 				activeCard = null;
 			} else if (startSlot instanceof FinishSlot) {
-				activeCard.setPos(startSlot.getPos());
+				activeCard.moveTo(startSlot.getPos());
 				activeCard = null;
 			}
 		}
@@ -210,14 +246,26 @@ public class PlayState extends GameState {
 	private void checkWon() {
 		for (int i = 0; i < finishSlots.size(); i++) {
 			FinishSlot finishSlot = finishSlots.get(i);
-			if (finishSlot.getCardPile().size() != NB_VALUES)
+			if (finishSlot.getCardPile().size() < NB_VALUES) {
 				return;
+			}
 		}
-		System.out.println("WON");
+		won = true;
+		newGame();
 	}
 
 	public void update() {
 		checkKeys();
+
+		pile.update();
+
+		for (int i = 0; i < finishSlots.size(); i++) {
+			finishSlots.get(i).update();
+		}
+
+		for (int i = 0; i < slots.size(); i++) {
+			slots.get(i).update();
+		}
 
 		if (activeCard != null && Mouse.isPressed()) {
 			Point point = new Point((int) (Mouse.x - mouse_dx), (int) (Mouse.y - mouse_dy));
@@ -234,19 +282,19 @@ public class PlayState extends GameState {
 	}
 
 	public void draw(Graphics2D g) {
-		// BG
+
 		g.setColor(green);
 		g.fillRect(0, 0, GamePanel.WIDTH, GamePanel.HEIGHT);
 
-		pile.draw(g);
+		for (int i = 0; i < slots.size(); i++) {
+			slots.get(i).draw(g);
+		}
 
 		for (int i = 0; i < finishSlots.size(); i++) {
 			finishSlots.get(i).draw(g);
 		}
 
-		for (int i = 0; i < slots.size(); i++) {
-			slots.get(i).draw(g);
-		}
+		pile.draw(g);
 
 		if (activeCard != null) {
 			activeCard.draw(g);
@@ -257,13 +305,22 @@ public class PlayState extends GameState {
 	}
 
 	public void newGame() {
-		init();
+		Object[] options = { "Yes", "No", "Cancel" };
+		int n = JOptionPane.showOptionDialog(frame, "You won !\nWould you like to play again ? ", "Game over",
+				JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[2]);
+		switch (n) {
+		case JOptionPane.YES_OPTION:
+			init();
+			break;
+		case JOptionPane.NO_OPTION:
+			System.exit(1);
+			break;
+		default:
+			break;
+		}
 	}
 
 	public static Texture getTextureInstance() {
 		return texture;
-	}
-
-	public void rightClick() {
 	}
 }

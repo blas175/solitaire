@@ -24,6 +24,5 @@ public abstract class GameState {
 	public void rightClick() {
 		// TODO Auto-generated method stub
 		
-	}
-	
+	}	
 }

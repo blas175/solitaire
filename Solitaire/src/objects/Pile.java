@@ -2,19 +2,13 @@ package objects;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Point;
 
 public class Pile extends BaseSlot {
 
-	private int curCard = -1;
+	private int curCard = 0;
 
 	public Pile(int x, int y) {
 		super(x, y);
-	}
-
-	@Override
-	public void update() {
-
 	}
 
 	@Override
@@ -27,11 +21,11 @@ public class Pile extends BaseSlot {
 		g.draw(getBounds());
 
 		if (curCard >= 0) {
-			if (curCard >= 1)
+			if (curCard >= 1) {
 				cardPile.get(curCard - 1).draw(g);
+			}
 			cardPile.get(curCard).draw(g);
 		}
-
 	}
 
 	public Card getCurCard() {
@@ -54,13 +48,13 @@ public class Pile extends BaseSlot {
 		if (curCard < cardPile.size() - 1) {
 			curCard++;
 		} else {
-			curCard = -1;
+			curCard = 0;
 		}
 
 	}
 
 	public void previous() {
-		if (curCard > -1) {
+		if (curCard > 0) {
 			curCard--;
 		} else {
 			curCard = cardPile.size() - 1;

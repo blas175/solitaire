@@ -23,7 +23,7 @@ public class Frame extends JFrame {
 	public Frame(String title) {
 		super(title);
 		
-		gamePanel = new GamePanel();
+		gamePanel = new GamePanel(this);
 
 		gameMenu.add(newGameItem);
 		gameMenu.add(quitItem);

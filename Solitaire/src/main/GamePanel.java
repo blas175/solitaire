@@ -8,6 +8,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 
@@ -16,7 +17,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
 
 	// dimensions
 	public static final int WIDTH = 900;
-	public static final int HEIGHT = 500;
+	public static final int HEIGHT = 600;
 	public static final int SCALE = 1;
 
 	// game thread
@@ -31,12 +32,14 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
 
 	// game state manager
 	private GameStateManager gsm;
+	private JFrame frame;
 
-	public GamePanel() {
+	public GamePanel(JFrame frame) {
 		super();
 		setPreferredSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
 		setFocusable(true);
 		requestFocus();
+		this.frame = frame;
 	}
 
 	public void addNotify() {
@@ -113,6 +116,11 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
 	}
 	public void keyReleased(KeyEvent key) {
 		Keys.keySet(key.getKeyCode(), false);
+	}
+
+	
+	public JFrame getFrame() {
+		return frame;
 	}
 
 	public void newGame() {

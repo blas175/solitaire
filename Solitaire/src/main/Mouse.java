@@ -11,6 +11,8 @@ public class Mouse implements MouseListener, MouseMotionListener {
 	public static int x;
 	public static int y;
 	private static boolean pressed;
+
+	private static boolean doubleClick;
 	private GameStateManager stateManager;
 
 	public Mouse(GameStateManager stateManager) {
@@ -20,11 +22,17 @@ public class Mouse implements MouseListener, MouseMotionListener {
 	public void mousePressed(MouseEvent e) {
 		x = e.getX();
 		y = e.getY();
-		if(SwingUtilities.isLeftMouseButton(e)){
+
+		if (e.getClickCount() == 2) {
+			doubleClick = true;
+		} else {
+			doubleClick = false;
+		}
+		
+		if (SwingUtilities.isLeftMouseButton(e)) {
 			stateManager.gameStates[stateManager.currentState].pressed();
 			pressed = true;
-		}
-		else{
+		} else {
 			stateManager.gameStates[stateManager.currentState].rightClick();
 		}
 	}
@@ -32,8 +40,8 @@ public class Mouse implements MouseListener, MouseMotionListener {
 	public void mouseReleased(MouseEvent e) {
 		x = e.getX();
 		y = e.getY();
-		if(SwingUtilities.isLeftMouseButton(e)){
-			stateManager.gameStates[stateManager.currentState].released();
+		if (SwingUtilities.isLeftMouseButton(e)) {
+				stateManager.gameStates[stateManager.currentState].released();
 		}
 		pressed = false;
 	}
@@ -56,6 +64,9 @@ public class Mouse implements MouseListener, MouseMotionListener {
 
 	public static boolean isPressed() {
 		return pressed;
+	}
+	public static boolean isDoubleClick() {
+		return doubleClick;
 	}
 
 	@Override

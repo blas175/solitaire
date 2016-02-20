@@ -18,11 +18,6 @@ public class FinishSlot extends BaseSlot {
 	}
 
 	@Override
-	public void update() {
-
-	}
-
-	@Override
 	public void draw(Graphics2D g) {
 		g.setColor(Color.white);
 		g.fill(getBounds());
@@ -37,7 +32,7 @@ public class FinishSlot extends BaseSlot {
 
 	public void addToPile(Card activeCard) {
 		cardPile.add(activeCard);
-		activeCard.setPos(getPos());
+		activeCard.moveTo(getPos());
 	}
 
 	public void removeLastCard() {
