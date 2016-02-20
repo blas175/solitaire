@@ -2,18 +2,14 @@ package objects;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.util.ArrayList;
 
-public class Slot extends GameObject {
+public class Slot extends BaseSlot {
 
 	private int offset = height / 8;
-	private ArrayList<Card> cardPile;
 
 	public Slot(int x, int y) {
 		super(x, y);
-		
-		cardPile = new ArrayList<>();
 	}
 
 	@Override
@@ -30,14 +26,6 @@ public class Slot extends GameObject {
 			cardPile.get(i).draw(g);
 		}
 
-	}
-
-	public ArrayList<Card> getCardPile() {
-		return cardPile;
-	}
-
-	public void setCardPile(ArrayList<Card> cardPile) {
-		this.cardPile = cardPile;
 	}
 
 	public void addToPile(Card activeCard) {

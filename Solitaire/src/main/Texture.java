@@ -1,12 +1,11 @@
 package main;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
 public class Texture {
 	private static final int TILE_WIDTH = PlayState.TILE_WIDTH;
-	private static final int TILE_HEIGHT = PlayState.TILE_HEIGHT;
+//	private static final int TILE_HEIGHT = PlayState.TILE_HEIGHT;
 	private BufferedImage cardsImage;
 	private SpriteSheet cardsSheet;
 	public BufferedImage tile;

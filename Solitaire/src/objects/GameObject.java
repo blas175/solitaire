@@ -10,7 +10,7 @@ import main.PlayState;
 public abstract class GameObject {
 	protected static final int TILE_BORDER = PlayState.TILE_BORDER;
 	protected static final int MARGINX = PlayState.MARGINX, MARGINY = PlayState.MARGINY;
-	protected static final int TILE_WIDTH = PlayState.TILE_WIDTH;
+	protected static final int CARD_SPACE = PlayState.CARD_SPACE;
 
 	protected int x, y;
 	protected int width = PlayState.TILE_WIDTH;
