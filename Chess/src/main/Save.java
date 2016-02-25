@@ -9,7 +9,7 @@ public class Save {
 
 	public static void saveGame(PlayState playState) {
 		try {
-			SaveFile saveFile = new SaveFile(playState.cardsIds);
+			SaveFile saveFile = new SaveFile(playState);
 			FileOutputStream fos = new FileOutputStream("res/save/levels");
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 			oos.writeObject(saveFile);
@@ -25,7 +25,6 @@ public class Save {
 			ObjectInputStream oos = new ObjectInputStream(fos);
 			SaveFile saveFile = (SaveFile) oos.readObject();
 			oos.close();
-			playState.cardsIds = saveFile.cardsIds;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}

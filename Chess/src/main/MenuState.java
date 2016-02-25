@@ -69,12 +69,17 @@ public class MenuState extends GameState {
 	}
 
 	public void handleInput() {
-	}
-
-	@Override
-	public void newGame() {
-		// TODO Auto-generated method stub
-		
+		if(Keys.isPressed(Keys.ENTER)) select();
+		if(Keys.isPressed(Keys.UP)) {
+			if(currentChoice > 0) {
+				currentChoice--;
+			}
+		}
+		if(Keys.isPressed(Keys.DOWN)) {
+			if(currentChoice < options.length - 1) {
+				currentChoice++;
+			}
+		}
 	}
 
 	@Override
