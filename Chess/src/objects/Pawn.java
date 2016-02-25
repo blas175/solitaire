@@ -40,10 +40,7 @@ public class Pawn extends Piece {
 			if ((my == gy + 1 && color == BLACK) || (my == gy - 1 && color == WHITE)) {
 				for (int i = 0; i < pieces.size(); i++) {
 					Piece piece = pieces.get(i);
-					if (piece == this)
-						continue;
-					if (piece.getGX() == mx && piece.getGY() == my) {
-						pieces.remove(piece);
+					if (piece != this && piece.getGX() == mx && piece.getGY() == my) {
 						return true;
 					}
 				}

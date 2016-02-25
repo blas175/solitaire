@@ -102,7 +102,6 @@ public class Bishop extends Piece {
 					for (int i = 0; i < pieces.size(); i++) {
 						Piece piece = pieces.get(i);
 						if (cx == mx && piece != this && piece.getGY() == my && piece.getGX() == mx) {
-							pieces.remove(piece);
 							return true;
 						}
 						if (piece != this && piece.getGX() == cx && piece.getGY() == gy + cx - gx) {
@@ -117,7 +116,6 @@ public class Bishop extends Piece {
 					for (int i = 0; i < pieces.size(); i++) {
 						Piece piece = pieces.get(i);
 						if (cx == mx && piece != this && piece.getGY() == my && piece.getGX() == mx) {
-							pieces.remove(piece);
 							return true;
 						}
 						if (piece != this && piece.getGX() == cx && piece.getGY() == gy + cx - gx) {
@@ -135,7 +133,6 @@ public class Bishop extends Piece {
 					for (int i = 0; i < pieces.size(); i++) {
 						Piece piece = pieces.get(i);
 						if (cx == mx && piece != this && piece.getGY() == my && piece.getGX() == mx) {
-							pieces.remove(piece);
 							return true;
 						}
 						if (piece != this && piece.getGX() == cx && piece.getGY() == gy - cx + gx) {
@@ -150,7 +147,6 @@ public class Bishop extends Piece {
 					for (int i = 0; i < pieces.size(); i++) {
 						Piece piece = pieces.get(i);
 						if (cx == mx && piece != this && piece.getGY() == my && piece.getGX() == mx) {
-							pieces.remove(piece);
 							return true;
 						}
 						if (piece != this && piece.getGX() == cx && piece.getGY() == gy - cx + gx) {

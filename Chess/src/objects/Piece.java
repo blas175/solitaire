@@ -1,8 +1,6 @@
 package objects;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
-import java.lang.ProcessBuilder.Redirect;
 import java.util.ArrayList;
 
 import main.PlayState;
@@ -11,7 +9,6 @@ public abstract class Piece extends GameObject {
 
 	protected int color;
 	protected int value;
-	protected boolean check = false;
 
 	public Piece(double x, double y) {
 		super(x, y);
@@ -23,10 +20,6 @@ public abstract class Piece extends GameObject {
 
 	@Override
 	public void draw(Graphics2D g) {
-		if (check) {
-			g.setColor(Color.red);
-			g.fill(getBounds());
-		}
 		g.drawImage(texture.pieces[color][value], (int) x, (int) y, null);
 
 	}
@@ -55,18 +48,13 @@ public abstract class Piece extends GameObject {
 		return (int) (y - MARGINY) / height;
 	}
 
-	public void setCheck(boolean check) {
-		this.check = check;
-
-	}
-
 	public boolean valid(Point startPos, ArrayList<Piece> pieces, int mx, int my, PlayState playState) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	public boolean isCheck(ArrayList<Piece> pieces, King king) {
-		return false;		
+		return false;
 	}
 
 }

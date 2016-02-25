@@ -99,15 +99,6 @@ public class PlayState extends GameState {
 			my = (Mouse.y - MARGINY) / TILE_WIDTH;
 			if (curPiece.valid(startPos, pieces, mx, my, this)) {
 				curPiece.setPos(new Point(MARGINX + mx * TILE_WIDTH, MARGINY + my * TILE_WIDTH));
-				if (curPiece instanceof Rook) {
-					((Rook) curPiece).setHasMoved(true);
-				}
-				if (curPiece instanceof King) {
-					((King) curPiece).setHasMoved(true);
-				}
-				if (curPiece instanceof Pawn) {
-					((Pawn) curPiece).checkPromotion(pieces);
-				}
 
 				whiteKing.setCheck(false);
 				blackKing.setCheck(false);
@@ -118,8 +109,35 @@ public class PlayState extends GameState {
 						break;
 					}
 				}
+				if (turn == WHITE && whiteKing.hasCheck()) {
+					goBack();
+					whiteKing.setCheck(false);
+					return;
+				}
+				if (turn == BLACK && blackKing.hasCheck()) {
+					goBack();
+					blackKing.setCheck(false);
+					return;
+				}
+				for (int i = 0; i < pieces.size(); i++) {
+					Piece piece = pieces.get(i);
+					if (piece != curPiece && piece.getGX() == mx && piece.getGY() == my){
+						pieces.remove(piece);
+					}
+				}
+				
+				if (curPiece instanceof Rook) {
+					((Rook) curPiece).setHasMoved(true);
+				}
+				if (curPiece instanceof King) {
+					((King) curPiece).setHasMoved(true);
+				}
+				if (curPiece instanceof Pawn) {
+					((Pawn) curPiece).checkPromotion(pieces);
+				}
+				
 				curPiece = null;
-//				 turn = (turn == 0) ? 1 : 0;
+				turn = (turn == 0) ? 1 : 0;
 				return;
 			} else {
 				goBack();
@@ -221,10 +239,8 @@ public class PlayState extends GameState {
 		pieces.add(new Queen(MARGINX + 3 * TILE_WIDTH, MARGINY + 7 * TILE_WIDTH, WHITE));
 		whiteKing = new King(MARGINX + 4 * TILE_WIDTH, MARGINY + 7 * TILE_WIDTH, WHITE);
 		pieces.add(whiteKing);
-		 pieces.add(new Bishop(MARGINX + 5 * TILE_WIDTH, MARGINY + 7 *
-		 TILE_WIDTH, WHITE));
-		 pieces.add(new Knight(MARGINX + 6 * TILE_WIDTH, MARGINY + 7 *
-		 TILE_WIDTH, WHITE));
+//		pieces.add(new Bishop(MARGINX + 5 * TILE_WIDTH, MARGINY + 7 * TILE_WIDTH, WHITE));
+//		pieces.add(new Knight(MARGINX + 6 * TILE_WIDTH, MARGINY + 7 * TILE_WIDTH, WHITE));
 		pieces.add(new Rook(MARGINX + 7 * TILE_WIDTH, MARGINY + 7 * TILE_WIDTH, WHITE));
 	}
 

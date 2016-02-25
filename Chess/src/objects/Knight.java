@@ -38,13 +38,6 @@ public class Knight extends Piece {
 		if ((mx == gx + 2 && my == gy + 1) || (mx == gx + 2 && my == gy - 1) || (mx == gx - 2 && my == gy + 1)
 				|| (mx == gx - 2 && my == gy - 1) || (mx == gx + 1 && my == gy + 2) || (mx == gx + 1 && my == gy - 2)
 				|| (mx == gx - 1 && my == gy + 2) || (mx == gx - 1 && my == gy - 2)) {
-			for (int i = 0; i < pieces.size(); i++) {
-				Piece piece = pieces.get(i);
-				if (piece != this && piece.getGX() == mx && piece.getGY() == my) {
-					pieces.remove(piece);
-					return true;
-				}
-			}
 			return true;
 		}
 		return false;
