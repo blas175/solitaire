@@ -2,6 +2,10 @@ package main;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 public class Texture {
 	private static final int TILE_WIDTH = PlayState.TILE_WIDTH;
@@ -26,6 +30,13 @@ public class Texture {
 			for(int j = 0 ; j < cards[i].length ; j++){
 			cards[i][j] = cardsSheet.grabImage(j, i, width, height);
 			cards[i][j] = resize(cards[i][j], TILE_WIDTH, (int) (TILE_WIDTH*ratio));
+//			File outputfile = new File("card"+i+"-"+j+".png");
+//		    try {
+//				ImageIO.write(cards[i][j], "png", outputfile);
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 			}
 		}
 	}
