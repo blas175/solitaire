@@ -7,6 +7,7 @@ import java.io.ObjectOutputStream;
 
 public class Save {
 
+	public int a;
 	public static void saveGame(PlayState playState) {
 		try {
 			SaveFile saveFile = new SaveFile(playState.cardsIds);
